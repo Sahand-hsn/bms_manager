@@ -18,7 +18,7 @@ class BMSLedStrip():
                                 LED_2_DMA, LED_2_INVERT, LED_2_BRIGHTNESS,
                                 LED_2_CHANNEL, LED_2_STRIP)
         self.strip.begin()
-        self.update(9) 
+        self.update(9)
         time.sleep(2)
         self.colorWipe()
         self.config()
@@ -34,7 +34,7 @@ class BMSLedStrip():
             self.strip.show()
             time.sleep(wait_ms / 1000.0)
 
-    def update(self, strip_part_On): 
+    def update(self, strip_part_On):
         try:
             for i in range(self.strip.numPixels()):
                 if i <= strip_part_On:
@@ -47,10 +47,14 @@ class BMSLedStrip():
         except KeyboardInterrupt:
             self.colorWipe()
 
-
-# if __name__ == '__main__':
-#     strip = BMSLedStrip()
-#     while True: 
-#         BMS_Percentage = 30 
-#         strip.update( int( BMS_Percentage / 100 * 9) ) 
-            
+if __name__ == '__main__':
+    strip = BMSLedStrip()
+    BMS_Percentage = 0
+    while True: 
+        try:
+            BMS_Percentage += 10 
+            BMS_Percentage = BMS_Percentage % 100
+            strip.update( int( BMS_Percentage / 100 * 9) ) 
+            time.sleep(2)
+        except KeyboardInterrupt:
+            strip.colorWipe()
