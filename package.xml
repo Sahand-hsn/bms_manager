@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>raspi_node</name>
+  <name>bms_manager</name>
   <version>0.0.0</version>
-  <description>The raspi_node package</description>
+  <description>The bms_manager package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->

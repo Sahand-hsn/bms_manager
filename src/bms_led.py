@@ -48,9 +48,9 @@ class BMSLedStrip():
             self.colorWipe()
 
 
-if __name__ == '__main__':
-    strip = BMSLedStrip()
-    while True: 
-        BMS_Percentage = 30 
-        strip.update( int( BMS_Percentage / 100 * 9) ) 
+# if __name__ == '__main__':
+#     strip = BMSLedStrip()
+#     while True: 
+#         BMS_Percentage = 30 
+#         strip.update( int( BMS_Percentage / 100 * 9) ) 
             
