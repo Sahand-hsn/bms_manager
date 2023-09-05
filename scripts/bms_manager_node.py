@@ -3,12 +3,14 @@
 import rospy
 from std_msgs.msg import String
 import bms_led
+import sys
 
 import asyncio
 from typing import List
 import can
 from can.notifier import MessageRecipient
-
+import std_msgs
+from math import floor
 
 can.rc['interface'] = 'socketcan'
 can.rc['channel'] = 'can0'
@@ -52,8 +54,11 @@ async def main(d_id):
         try:
             bus.send(can.Message(arbitration_id=can_id, data=msg_content, is_extended_id=True)) 
         except can.CanError:
-            print("Message NOT sent")
-        await reader.get_message()
+            raise can.CanError("CAN Error, Message could NOT get sent. Interface can0 not available.")
+        try:
+            await asyncio.wait_for(reader.get_message(), 10)
+        except asyncio.TimeoutError: 
+            raise TimeoutError("CAN Timeout, BMS not reachable!")
         notifier.stop()
 
 def update_bms():
@@ -61,16 +66,22 @@ def update_bms():
 
 
 def init_node():
-    pub = rospy.Publisher('bms_status', String, queue_size=10)
+    global bms_SOC
+    pub = rospy.Publisher('bms_status/SOC', std_msgs.msg.Float32, queue_size=10)
     rospy.init_node('bms_status')
-    rate = rospy.Rate(0.1) # every 10 seconds 
-    #led_strip = bms_led.BMSLedStrip() 
+    rate = rospy.Rate(0.1) # every 10 seconds
+    led_strip = bms_led.BMSLedStrip() 
     while not rospy.is_shutdown():
-        update_bms()
-        SOC_msg = "SOC level is {}%".format(bms_SOC)
-        rospy.loginfo(SOC_msg)
-        pub.publish(SOC_msg)
-        #led_strip.update(int( bms_SOC / 100 * 9))
+        try: 
+            update_bms()
+            SOC_msg = "SOC level is {}%".format(bms_SOC)
+            rospy.loginfo(SOC_msg)
+            pub.publish(round(bms_SOC,1))
+        except TimeoutError as e:
+            rospy.logerr(e)
+        except can.CanError as e:
+            rospy.logerr(e)
+        led_strip.update(int( bms_SOC / 100 * 9)) #TODO
         rate.sleep()
 
 if __name__ == '__main__':
@@ -78,4 +89,4 @@ if __name__ == '__main__':
         init_node()
     except rospy.ROSInterruptException:
         pass
-        
+
