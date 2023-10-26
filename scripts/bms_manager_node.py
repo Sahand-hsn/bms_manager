@@ -16,55 +16,21 @@ import std_msgs
 from math import floor
 
 import time
-from rpi_ws281x import ws, PixelStrip, Adafruit_NeoPixel, Color
-class BMSLedStrip(): 
-    def __init__(self):
-        ### SETUP OF LED STRIP
-        LED_2_COUNT = 54        # Number of LED pixels.
-        LED_2_PIN = 18          # GPIO pin connected to the pixels (must support PWM! GPIO 13 or 18 on RPi 3).
-        #LED_2_PIN = 10          # GPIO 10 uses SPI this can run without sudo 
-        LED_2_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
-        LED_2_DMA = 10          # DMA channel to use for generating signal (Between 1 and 14)
-        LED_2_BRIGHTNESS = 30  # Set to 0 for darkest and 255 for brightest
-        LED_2_INVERT = False    # True to invert the signal (when using NPN transistor level shift)
-        LED_2_CHANNEL = 0       # 0 or 1
-        LED_2_STRIP = ws.WS2811_STRIP_GBR
+import neopixel
+import board
 
-        self.strip = PixelStrip(LED_2_COUNT, LED_2_PIN, LED_2_FREQ_HZ,
-                                LED_2_DMA, LED_2_INVERT, LED_2_BRIGHTNESS,
-                                LED_2_CHANNEL, LED_2_STRIP)
-        self.strip.begin()
-        self.update(9)
-        time.sleep(2)
-        self.colorWipe()
-        self.config()
-
-    def config(self):
-        pass
-
-
-    def colorWipe(self, color= Color(0, 0, 0), wait_ms=5):
-        """Wipe color across display a pixel at a time."""
-        for i in range(self.strip.numPixels()):
-            self.strip.setPixelColor(i, color)
-            self.strip.show()
-            time.sleep(wait_ms / 1000.0)
-
-    def update(self, strip_part_On):
-        try:
-            for i in range(self.strip.numPixels()):
-                if i <= strip_part_On:
-                    shade_g = int(255*strip_part_On/9)
-                    shade_r = int(-255*strip_part_On/9 + 255)
-                    self.strip.setPixelColor(i, Color(shade_g,shade_r,0))
-                    time.sleep(1 / 1000.0)
-                else:
-                    self.strip.setPixelColor(i, Color(0,0,0))
-                    time.sleep(1 / 1000.0)
-            self.strip.show()
-        except KeyboardInterrupt:
-            self.colorWipe()
-
+def update_strip(strip, strip_part_On):
+    try:
+        for i in range(12):
+            if i <= strip_part_On:
+                shade_g = int(255*strip_part_On/12)
+                shade_r = int(-255*strip_part_On/12 + 255)
+                strip[-i-1] = (0,shade_r,shade_g) #BRG
+                #self.strip.setPixelColor(i, Color(255,0,0))
+            else:
+                strip[-i-1] = (0,0,0)
+    except KeyboardInterrupt:
+        strip.fill((0,0,0))
 
 
 can.rc['interface'] = 'socketcan'
@@ -120,29 +86,29 @@ def update_bms():
     asyncio.run(main(0x90))
 
 
-def init_node():
-    global bms_SOC
-    pub = rospy.Publisher('bms_status/SOC', std_msgs.msg.Float32, queue_size=10)
-    rospy.init_node('bms_status')
-    rate = rospy.Rate(0.1) # every 10 seconds
-    led_strip = BMSLedStrip() 
-    while not rospy.is_shutdown():
-        try: 
-            update_bms()
-            SOC_msg = "SOC level is {}%".format(bms_SOC)
-            rospy.loginfo(SOC_msg)
-            pub.publish(round(bms_SOC,1))
-        except TimeoutError as e:
-            rospy.logerr(e)
-        except can.CanError as e:
-            rospy.logerr(e)
-        led_strip.update(int( bms_SOC / 100 * 9)) #TODO
-        rate.sleep()
-
 
 if __name__ == '__main__':
     try:
-        init_node()
+        pub = rospy.Publisher('bms_status/SOC', std_msgs.msg.Float32, queue_size=10)
+        rospy.init_node('bms_status')
+        rate = rospy.Rate(0.1) # every 10 seconds
+        led_strip = neopixel.NeoPixel(board.D21, 12)
+        while not rospy.is_shutdown():
+            try: 
+                update_bms()
+                SOC_msg = "SOC is {}%".format(bms_SOC)
+                rospy.loginfo(SOC_msg)
+                pub.publish(round(bms_SOC,1))
+            except TimeoutError as e:
+                rospy.logerr(e)
+            except can.CanError as e:
+                rospy.logerr(e)
+            except KeyboardInterrupt:
+                print("interrupted here 1 ")
+                strip.fill((0,0,0))
+            update_strip(led_strip, int( bms_SOC / 100 * 12))  
+            rate.sleep()
     except rospy.ROSInterruptException:
+        print("interrupted here 2 ")
         pass
 

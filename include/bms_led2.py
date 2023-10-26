@@ -22,7 +22,7 @@ if __name__ == '__main__':
     BMS_Percentage = 0
     while True: 
         try: 
-            if (BMS_Percentage > 100): BMS_Percentage = 1
+            if (BMS_Percentage > 100): BMS_Percentage = 0
             update(strip, int( BMS_Percentage / 100 * 12) )
             print(BMS_Percentage / 100 * 12,  int( BMS_Percentage / 100 * 12) )
             BMS_Percentage += 5
