@@ -55,7 +55,7 @@ def message_callback(msg: can.Message) -> None:
         # print("SOC {}%".format(bms_SOC))
 
 
-async def main(d_id):
+async def update_can(d_id):
     with can.Bus() as bus:
         reader = can.AsyncBufferedReader()
         logger = can.Logger("logfile.asc")
@@ -83,32 +83,30 @@ async def main(d_id):
         notifier.stop()
 
 def update_bms():
-    asyncio.run(main(0x90))
-
+    asyncio.run(update_can(0x90))
 
 
 if __name__ == '__main__':
     try:
         pub = rospy.Publisher('bms_status/SOC', std_msgs.msg.Float32, queue_size=10)
-        rospy.init_node('bms_status')
+        rospy.init_node('bms_manager_node', log_level=rospy.DEBUG)
+        rospy.loginfo("bms_node_node started")
         rate = rospy.Rate(0.1) # every 10 seconds
         led_strip = neopixel.NeoPixel(board.D21, 12)
         while not rospy.is_shutdown():
             try: 
                 update_bms()
-                SOC_msg = "SOC is {}%".format(bms_SOC)
-                rospy.loginfo(SOC_msg)
-                pub.publish(round(bms_SOC,1))
             except TimeoutError as e:
                 rospy.logerr(e)
             except can.CanError as e:
                 rospy.logerr(e)
-            except KeyboardInterrupt:
-                print("interrupted here 1 ")
-                strip.fill((0,0,0))
+            SOC_msg = "SOC is {}%".format(bms_SOC)
+            rospy.logdebug(SOC_msg)
+            pub.publish(round(bms_SOC,1))
             update_strip(led_strip, int( bms_SOC / 100 * 12))  
             rate.sleep()
-    except rospy.ROSInterruptException:
-        print("interrupted here 2 ")
-        pass
+        if rospy.is_shutdown(): 
+            led_strip.fill((0,0,0))
+    except: 
+        rospy.logerr("bms_manager_node failed to start")
 
