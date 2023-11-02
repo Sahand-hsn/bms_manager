@@ -25,11 +25,12 @@ def update_strip(strip, strip_part_On):
             if i <= strip_part_On:
                 shade_g = int(255*strip_part_On/12)
                 shade_r = int(-255*strip_part_On/12 + 255)
-                strip[-i-1] = (0,shade_r,shade_g) #BRG
+                strip[-i-1] = (0,shade_r+10,shade_g) #BRG
                 #self.strip.setPixelColor(i, Color(255,0,0))
             else:
                 strip[-i-1] = (0,0,0)
     except KeyboardInterrupt:
+        rospy.logerr("KeyboardInterrupt while update_strip")
         strip.fill((0,0,0))
 
 
@@ -74,25 +75,30 @@ async def update_can(d_id):
         msg_content = []
         try:
             bus.send(can.Message(arbitration_id=can_id, data=msg_content, is_extended_id=True)) 
-        except can.CanError:
-            raise can.CanError("CAN Error, Message could NOT get sent. Interface can0 not available.")
+        except can.CanError as e :
+            rospy.logerr(e)
         try:
             await asyncio.wait_for(reader.get_message(), 10)
-        except asyncio.TimeoutError: 
-            raise TimeoutError("CAN Timeout, BMS not reachable!")
+        except asyncio.TimeoutError as e: 
+            rospy.logerr(e)
         notifier.stop()
 
 def update_bms():
     asyncio.run(update_can(0x90))
 
+def led_start_demo(led_strip):
+    for i in range(0,12):  
+        update_strip(led_strip, i+1)
+        time.sleep(0.1)
 
 if __name__ == '__main__':
+    rospy.init_node('bms_manager_node', log_level=rospy.DEBUG)
+    rospy.loginfo("bms_node_node started")
     try:
         pub = rospy.Publisher('bms_status/SOC', std_msgs.msg.Float32, queue_size=10)
-        rospy.init_node('bms_manager_node', log_level=rospy.DEBUG)
-        rospy.loginfo("bms_node_node started")
         rate = rospy.Rate(0.1) # every 10 seconds
         led_strip = neopixel.NeoPixel(board.D21, 12)
+        led_start_demo(led_strip)
         while not rospy.is_shutdown():
             try: 
                 update_bms()
@@ -105,8 +111,8 @@ if __name__ == '__main__':
             pub.publish(round(bms_SOC,1))
             update_strip(led_strip, int( bms_SOC / 100 * 12))  
             rate.sleep()
-        if rospy.is_shutdown(): 
-            led_strip.fill((0,0,0))
-    except: 
-        rospy.logerr("bms_manager_node failed to start")
+    finally: 
+        rospy.loginfo("bms_manager_node shut down")
+        led_strip.fill((0,0,0))
+        
 
