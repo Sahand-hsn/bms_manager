@@ -22,6 +22,9 @@ the script has to run on start up to start the node that query the bms data, upd
 
 
 
+
 bms_manager/scripts/bms_manager.sh
 
 
+
+Using the robot_upstart does not work since we need sudo. 
