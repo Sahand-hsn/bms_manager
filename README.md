@@ -5,7 +5,7 @@
 ## changes for the CAN ifup on startup: 
 
 created: 
-' /etc/systemd/network/80-can.network '
+’/etc/systemd/network/80-can.network ’
 
 
 	[Match]
