@@ -24,7 +24,7 @@ for testing the functionality of the node the script can be executed independant
 ## start bms_manager on start up: 
 we create a systemd service to start the node on start up. 
 
-make the ´´bms_manager.sh´´ file exacutable: 
+make the ´bms_manager.sh´ file exacutable: 
 
 	~> sudo chmod 744 scripts/bms_manager.sh
 
