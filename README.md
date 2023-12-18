@@ -32,7 +32,6 @@ make the bms_manager.sh file exacutable:
 we create a new file at /etc/systemd/system/bms_manager.service with the following content: 
 
 
-	
 	[Unit]
 	Description=BMS-manager-node manages the led strip and published bms data in ROS  
 	Wants=network.target
@@ -48,9 +47,9 @@ we create a new file at /etc/systemd/system/bms_manager.service with the followi
 
 and then run: 
 
-~> sudo systemctl daemon-reload 
-~> sudo systemctl enable bms_manager.service
-~> sudo systemctl start bms_manager.service
+	~> sudo systemctl daemon-reload 
+	~> sudo systemctl enable bms_manager.service
+	~> sudo systemctl start bms_manager.service
 
 now the node should start on SOC topic and the led strip should light up.
 
