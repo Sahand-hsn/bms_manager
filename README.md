@@ -1,10 +1,9 @@
 # bms_manager
 
 ## Installation
-clone the package into your workspace. 
+first clone the package into the raspberry pi's workspace. 
 
-and to bring up the CAN interface at startup: 
-the following file is created "/etc/systemd/network/80-can.network " 
+to bring up the CAN interface at startup the following file is created `/etc/systemd/network/80-can.network`
 that has the following content inside it.
 
 
@@ -24,12 +23,12 @@ for testing the functionality of the node the script can be executed independant
 ## start bms_manager on start up: 
 we create a systemd service to start the node on start up. 
 
-make the ´bms_manager.sh´ file exacutable: 
+make the bms_manager.sh file exacutable: 
 
 	~> sudo chmod 744 scripts/bms_manager.sh
 
 ## to bring up the bms_manager at startup: 
-we create a new file at <mark>/etc/systemd/system/bms_manager.service</mark> with the following content: 
+we create a new file at `/etc/systemd/system/bms_manager.service` with the following content: 
 
 
 	[Unit]
