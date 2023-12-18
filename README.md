@@ -32,18 +32,18 @@ make the bms_manager.sh file exacutable:
 we create a new file at /etc/systemd/system/bms_manager.service with the following content: 
 
 
+	
+	[Unit]
+	Description=BMS-manager-node manages the led strip and published bms data in ROS  
+	Wants=network.target
+	After=syslog.target network-online.target
 
-[Unit]
-Description=BMS-manager-node manages the led strip and published bms data in ROS  
-Wants=network.target
-After=syslog.target network-online.target
+	[Service]
+	Type=simple
+	ExecStart=/home/ubuntu/bms_manager_ws/src/bms_manager/scripts/bms_manager.sh
 
-[Service]
-Type=simple
-ExecStart=/home/ubuntu/bms_manager_ws/src/bms_manager/scripts/bms_manager.sh
-
-[Install]
-WantedBy=multi-user.target
+	[Install]
+	WantedBy=multi-user.target
 
 
 and then run: 
