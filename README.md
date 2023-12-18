@@ -1,9 +1,9 @@
 # bms_manager
 
-# Installation
+## Installation
 clone the package into your workspace. 
 
-## to bring up the CAN interface at startup: 
+and to bring up the CAN interface at startup: 
 the following file is created "/etc/systemd/network/80-can.network " 
 that has the following content inside it.
 
