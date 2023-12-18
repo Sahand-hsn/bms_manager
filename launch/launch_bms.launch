@@ -1,4 +1,0 @@
-<launch> 
-    <node name="bms_manager" pkg="bms_manager" type="bms_manager.sh"  /> 
-
-</launch> 
