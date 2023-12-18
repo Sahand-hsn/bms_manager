@@ -15,6 +15,7 @@ that has the following content inside it.
 
 
 ## Testing: 
+To test the node:
 for testing the functionality of the node the script can be executed independantly: 
 
 	~> cd bms_manager
@@ -44,6 +45,9 @@ we create a new file at `/etc/systemd/system/bms_manager.service` with the follo
 	WantedBy=multi-user.target
 
 
+please be aware that the `ExecStart` parameter has to be set correctly to point to the `bms_manager.sh` script.  
+Also make sure that the `ROS_MASTER_URI` is set correctly inside the `bms_manager.sh` and the roscore is running. 
+
 and then run: 
 
 	~> sudo systemctl daemon-reload 
@@ -51,4 +55,10 @@ and then run:
 	~> sudo systemctl start bms_manager.service
 
 now the node should start on SOC topic and the led strip should light up.
+
+
+## sources
+the CAN hat:
+
+	https://www.waveshare.com/wiki/RS485_CAN_HAT_(B)
 
