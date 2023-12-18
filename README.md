@@ -53,10 +53,3 @@ and then run:
 
 now the node should start on SOC topic and the led strip should light up.
 
-## To 
-the script has to run on start up to start the node that query the bms data, updates the led strip and published the bms_status to ROS. 
-
-
-Using the robot_upstart does not work since we need sudo. 
-
-
