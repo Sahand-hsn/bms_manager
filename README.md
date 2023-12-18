@@ -18,15 +18,15 @@ that has the following content inside it.
 ## Testing: 
 for testing the functionality of the node the script can be executed independantly: 
 
-~> cd bms_manager
-~> sudo bms_manager/scripts/bms_manager.sh
+	~> cd bms_manager
+	~> sudo bms_manager/scripts/bms_manager.sh
 
 ## start bms_manager on start up: 
 we create a systemd service to start the node on start up. 
 
-make the bms_manager.sh file exacutable: 
+make the ~~bms_manager.sh~~ file exacutable: 
 
-~> sudo chmod 744 scripts/bms_manager.sh
+	~> sudo chmod 744 scripts/bms_manager.sh
 
 ## to bring up the bms_manager at startup: 
 we create a new file at /etc/systemd/system/bms_manager.service with the following content: 
