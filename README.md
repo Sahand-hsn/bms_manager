@@ -29,7 +29,7 @@ make the ´bms_manager.sh´ file exacutable:
 	~> sudo chmod 744 scripts/bms_manager.sh
 
 ## to bring up the bms_manager at startup: 
-we create a new file at /etc/systemd/system/bms_manager.service with the following content: 
+we create a new file at <mark>/etc/systemd/system/bms_manager.service</mark> with the following content: 
 
 
 	[Unit]
