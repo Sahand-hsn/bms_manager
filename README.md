@@ -3,7 +3,8 @@
 ## Installation
 first clone the package into the raspberry pi's workspace. 
 
-to bring up the CAN interface at startup the following file is created `/etc/systemd/network/80-can.network`
+`config.txt` has to be set up like it has been explained in the CAN HAT documentation (see sources of this document).   
+to bring up the CAN interface at startup create a text file at `/etc/systemd/network/80-can.network`
 that has the following content inside it.
 
 
@@ -29,7 +30,7 @@ make the bms_manager.sh file exacutable:
 	~> sudo chmod 744 scripts/bms_manager.sh
 
 ## to bring up the bms_manager at startup: 
-we create a new file at `/etc/systemd/system/bms_manager.service` with the following content: 
+create a text file at `/etc/systemd/system/bms_manager.service` with the following content: 
 
 
 	[Unit]
@@ -39,7 +40,7 @@ we create a new file at `/etc/systemd/system/bms_manager.service` with the follo
 
 	[Service]
 	Type=simple
-	ExecStart=/home/ubuntu/bms_manager_ws/src/bms_manager/scripts/bms_manager.sh
+	ExecStart=/home/rosmatch/catkin_ws/src/bms_manager/scripts/bms_manager.sh
 
 	[Install]
 	WantedBy=multi-user.target
@@ -48,17 +49,21 @@ we create a new file at `/etc/systemd/system/bms_manager.service` with the follo
 please be aware that the `ExecStart` parameter has to be set correctly to point to the `bms_manager.sh` script.  
 Also make sure that the `ROS_MASTER_URI` is set correctly inside the `bms_manager.sh` and the roscore is running. 
 
-and then run: 
+and to start the node: 
 
 	~> sudo systemctl daemon-reload 
 	~> sudo systemctl enable bms_manager.service
 	~> sudo systemctl start bms_manager.service
 
-now the node should start on SOC topic and the led strip should light up.
+now the state of charge should get published on SOC ROS-topic and the led strip should light up.
 
 
 ## sources
+For reference see: 
 the CAN hat:
 
+	https://www.waveshare.com/wiki/RS485_CAN_HAT
 	https://www.waveshare.com/wiki/RS485_CAN_HAT_(B)
+
+ 
 
