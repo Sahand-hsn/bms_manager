@@ -3,6 +3,8 @@
 ## Installation
 first clone the package into the raspberry pi's workspace. 
 
+make sure that the parameters `LED_PIN` and the `BATTERY_NODE_ID` in `bms_manager_node.py` are set correctly.  
+
 `config.txt` has to be set up like it has been explained in the CAN HAT documentation (see sources of this document).   
 to bring up the CAN interface at startup create a text file at `/etc/systemd/network/80-can.network`
 that has the following content inside it.
@@ -60,10 +62,10 @@ now the state of charge should get published on SOC ROS-topic and the led strip 
 
 ## sources
 For reference see: 
-the CAN hat:
+the CAN HAT:
 
-	https://www.waveshare.com/wiki/RS485_CAN_HAT
-	https://www.waveshare.com/wiki/RS485_CAN_HAT_(B)
+	[](https://www.waveshare.com/wiki/RS485_CAN_HAT)
+	[](https://www.waveshare.com/wiki/RS485_CAN_HAT_(B))
 
  
 
