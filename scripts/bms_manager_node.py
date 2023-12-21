@@ -19,6 +19,9 @@ import time
 import neopixel
 import board
 
+LED_PIN = board.D21 # LED control pin 
+BATTERY_NODE_ID = 0x0340  # node id is written on the Battery module 
+
 def update_strip(strip, strip_part_On):
     try:
         for i in range(12):
@@ -38,7 +41,6 @@ can.rc['interface'] = 'socketcan'
 can.rc['channel'] = 'can0'
 can.rc['bitrate'] = 250000
 P = 0x18 
-addres = 0x0340 
 bms_SOC = 0
 
 def message_callback(msg: can.Message) -> None:
@@ -56,6 +58,7 @@ def message_callback(msg: can.Message) -> None:
         # print("SOC {}%".format(bms_SOC))
 
 
+# function gets the data ID and calls process it
 async def update_can(d_id):
     with can.Bus() as bus:
         reader = can.AsyncBufferedReader()
@@ -70,8 +73,8 @@ async def update_can(d_id):
         loop = asyncio.get_running_loop()
         notifier = can.Notifier(bus, listeners, loop=loop)
         # Start sending first message
-        a1 = (P << 8) | (d_id)
-        can_id = (a1 << 16 ) | addres
+        a1 = (P << 8) | (d_id) 
+        can_id = (a1 << 16 ) | BATTERY_NODE_ID
         msg_content = []
         try:
             bus.send(can.Message(arbitration_id=can_id, data=msg_content, is_extended_id=True)) 
@@ -84,7 +87,7 @@ async def update_can(d_id):
         notifier.stop()
 
 def update_bms():
-    asyncio.run(update_can(0x90))
+    asyncio.run(update_can(0x90)) # message ID that is sent to the BMS
 
 def led_start_demo(led_strip):
     for i in range(0,12):  
@@ -96,8 +99,8 @@ if __name__ == '__main__':
     rospy.loginfo("bms_node_node started")
     try:
         pub = rospy.Publisher('bms_status/SOC', std_msgs.msg.Float32, queue_size=10)
-        rate = rospy.Rate(0.1) # every 10 seconds
-        led_strip = neopixel.NeoPixel(board.D21, 12)
+        rate = rospy.Rate(0.1) # refresh every 10 seconds
+        led_strip = neopixel.NeoPixel(LED_PIN, 12)
         led_start_demo(led_strip)
         while not rospy.is_shutdown():
             try: 
@@ -112,7 +115,8 @@ if __name__ == '__main__':
             update_strip(led_strip, int( bms_SOC / 100 * 12))  
             rate.sleep()
     finally: 
-        rospy.loginfo("bms_manager_node shut down")
         led_strip.fill((0,0,0))
+        rospy.loginfo("bms_manager_node shut down")
+        
         
 

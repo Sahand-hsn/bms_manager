@@ -77,6 +77,7 @@ class BMS_CAN:
 if __name__ == "__main__":
     try:
         can1 = BMS_CAN() 
-        can1.update(0x90) 
-    except: 
+        can1.update() 
+    except Exception as e: 
         print("can failed")
+        print(e)
