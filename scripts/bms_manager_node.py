@@ -20,7 +20,8 @@ import neopixel
 import board
 
 LED_PIN = board.D21 # LED control pin 
-BATTERY_NODE_ID = 0x0340  # node id is written on the Battery module 
+BATTERY_NODE_ID = 0x0340  # address assignment of the message ->  0x<NODE_ID><40>   
+                          # <NODE_ID> is written on the battery
 
 def update_strip(strip, strip_part_On):
     try:
