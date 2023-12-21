@@ -64,8 +64,8 @@ now the state of charge should get published on SOC ROS-topic and the led strip 
 For reference see: 
 the CAN HAT:
 
-	[](https://www.waveshare.com/wiki/RS485_CAN_HAT)
-	[](https://www.waveshare.com/wiki/RS485_CAN_HAT_(B))
+	[RS485_CAN_HAT](https://www.waveshare.com/wiki/RS485_CAN_HAT)
+	[RS485_CAN_HAT_(B)](https://www.waveshare.com/wiki/RS485_CAN_HAT_(B))
 
  
 
