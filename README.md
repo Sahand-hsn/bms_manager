@@ -11,7 +11,7 @@ If not, the partition has to be mounted to change the config.txt. To find the bo
 For the isolated CAN-HAT, this lines are added:
 ```bash
 dtparam=spi=on
-dtoverlay=mcp2515-can0,oscillator=8000000,interrupt=25,spimaxfrequency=1000000
+dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25,spimaxfrequency=1000000
 ```
 
 For the small CAN-HAT this lines have to be changed to:
