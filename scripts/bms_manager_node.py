@@ -29,7 +29,7 @@ def update_strip(strip, strip_part_On):
             if i <= strip_part_On:
                 shade_g = int(255*strip_part_On/12)
                 shade_r = int(-255*strip_part_On/12 + 255)
-                strip[-i-1] = (0,shade_r+10,shade_g) #BRG
+                strip[-i-1] = (0,shade_r,shade_g) #BRG
                 #self.strip.setPixelColor(i, Color(255,0,0))
             else:
                 strip[-i-1] = (0,0,0)
