@@ -5,7 +5,20 @@ first clone the package into the raspberry pi's workspace.
 
 make sure that the parameters `LED_PIN` and the `BATTERY_NODE_ID` in `bms_manager_node.py` are set correctly.  
 
-`config.txt` has to be set up like it has been explained in the CAN HAT documentation (see sources of this document).   
+`config.txt` has to be set up like it has been explained in the CAN HAT documentation (see sources of this document).
+The config.txt can be found on the boot partition. The boot partition should be mounted under _/boot/firmware_. 
+If not, the partition has to be mounted to change the config.txt. To find the boot partition run ```sudo fdisk -l```. The boot partition is something like _/dev/mmcblk0p1_.
+For the isolated CAN-HAT, this lines are added:
+```bash
+dtparam=spi=on
+dtoverlay=mcp2515-can0,oscillator=8000000,interrupt=25,spimaxfrequency=1000000
+```
+
+For the small CAN-HAT this lines have to be changed to:
+```bash
+dtparam=spi=on
+dtoverlay=mcp2515-can0,oscillator=12000000,interrupt=25,spimaxfrequency=2000000
+```
 to bring up the CAN interface at startup create a text file at `/etc/systemd/network/80-can.network`
 that has the following content inside it.
 
